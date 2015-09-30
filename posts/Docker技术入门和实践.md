@@ -14,28 +14,28 @@ Docker的Logo 就很形象的表明了Docker的意图，一个系统可能需要
 
 [https://docs.docker.com/](https://docs.docker.com/)  
 [http://dockerpool.com/static/books/docker_practice/](http://dockerpool.com/static/books/docker_practice/)
-[http://dockone.io/article/101](http://dockone.io/article/101)
+[http://dockone.io/article/101](http://dockone.io/article/101/)
 
-##Docker源码分析
+###Docker源码分析
 
 [http://blog.daocloud.io/docker-source-code-analysis-part1/](http://blog.daocloud.io/docker-source-code-analysis-part1/)
 
-##Docker相关概念​
+###Docker相关概念​
 
-Docker Client：用户和 Docker 守护进程进行通信的接口，也就是 docker 命令。
-Docker 守护进程：宿主机上用于用户应答用户请求的服务。
-Docker Index：用户进行用户的私有、公有 Docker 容器镜像托管，也就是 Docker 仓库。
-Docker 容器：用于运行应用程序的容器，包含操作系统、用户文件和元数据。
-Docker 镜像：只读的 Docker 容器模板，简言之就是系统镜像文件。
-Dockerfile：进行镜像创建的指令文件。
+-Docker Client：用户和 Docker 守护进程进行通信的接口，也就是 docker 命令。
+-Docker 守护进程：宿主机上用于用户应答用户请求的服务。
+-Docker Index：用户进行用户的私有、公有 Docker 容器镜像托管，也就是 Docker 仓库。
+-Docker 容器：用于运行应用程序的容器，包含操作系统、用户文件和元数据。
+-Docker 镜像：只读的 Docker 容器模板，简言之就是系统镜像文件。
+-Dockerfile：进行镜像创建的指令文件。
 
-##还需要了解一些liunx内核的知识，它们是Docker实现容器化资源隔离的支柱。
+###还需要了解一些liunx内核的知识，它们是Docker实现容器化资源隔离的支柱。
 
-Namespaces ：充当隔离的第一级。确保一个容器中运行一个进程而且不能看到或影响容器外的其它进程。
-Control Groups：是LXC的重要组成部分，具有资源核算与限制的关键功能。
-UnionFS：（文件系统）作为容器的构建块。为了支持Docker的轻量级以及速度快的特性，它创建了用户层。
+-Namespaces ：充当隔离的第一级。确保一个容器中运行一个进程而且不能看到或影响容器外的其它进程。
+-Control Groups：是LXC的重要组成部分，具有资源核算与限制的关键功能。
+-UnionFS：（文件系统）作为容器的构建块。为了支持Docker的轻量级以及速度快的特性，它创建了用户层。
 
-#Docker软件安装
+##Docker软件安装
 
 Docker要求在64位的linux环境中运行，对于windows及Mac OS ,可以装个virtualbox或 vmware软件虚拟出来一个linux环境。 当前Docker的版本为1.8.1,此版本要求3.8以上的kernal版本，否则需要升级linux内核。Docker的版本为1.7.1可以在2.6以上的kernal版本运行，这意味着可以在CentOS6中安装1.7.1的版本。大部分Linux环境下，在网络正常的况情下，只需要执行下面的命定就能完成安装，
 
@@ -46,7 +46,7 @@ curl-sSL https://get.daocloud.io/docker | sh
 ```
 CentOS，Redhat下面也可以通过rpm包的方式进行安装，在http://rpmfind.net/linux/rpm2html/search.php通过搜索docker-engine能找到安装包。Docker服务默认是开机启动的，可以通过 service docker start|stop|restart|status进行管理
 
-#Docker实践
+##Docker实践
 
 要用dockered的程序是一个分布式的服务框架，四个部件结构如图所示：
 
@@ -60,7 +60,7 @@ sdk：服务消费方(客户端)
 这四个部分分别打成独立的镜像，每个部分运行一个docker容器，相互之存通过网络进行通信。soa服务容器把自己的ip及端口上报给服务注册中心，同时接收来自proxy的服务调用，proxy端查询服务注册中心的服务实现代理客户器的请求。这样的一种网络交互，若用Docker默认的网络模式bridge，如果使用bridge模式是Docker默认的网络设置，soa服务端上报给服务中心的ip和端口是要以参数的方式传给soa服务端的，不不能把本地的ip和端口直接上报给服务中心，因为应用程序在docker容器获取的是一个内部私有IP，外部是无法访问的。
 
 
-##SOA服务端的Dockerfile
+###SOA服务端的Dockerfile
 
 ```Bash
 
@@ -105,7 +105,7 @@ CMD ["osp-default.sh", "start"]
 
 SOA服务端需要向外部提供服务，在Dockerfile通过EXPOSE 把1080端口映射了出去，运行时可以通过-p进行host端口映射，同时应用需要输出日志，VOLUME提供了host目录挂载到容器目录的功能，运行时可以通过-v提定
 
-##Proxy端的Dockerfile
+###Proxy端的Dockerfile
 
 ```Bash
 
@@ -149,19 +149,27 @@ CMD ["osp-proxy-default.sh", "start"]
 
 ```
 
-#运行docker容器
+##运行docker容器
 
-##运行SOA服务端​
+###运行SOA服务端​
 
 ```Bash
 
-docker run -d -e VIP_CFGCENTER_ZK_CONNECTION=10.101.18.110:2181,10.101.18.111:2181,10.101.18.112:2181–e EXPORT_IP=192.168.89.61 –e EXPORT_PROT=1080 –p1080:1080 –v /apps/logs/osp-prox:usr/local/sayhello-service-engine/logs   sayhello-osp-engine 
+docker run -d \
+> -e VIP_CFGCENTER_ZK_CONNECTION=10.101.18.110:2181,10.101.18.111:2181,10.101.18.112:2181 \
+> –e EXPORT_IP=192.168.89.61 –e EXPORT_PROT=1080 –p1080:1080 \
+> –v /apps/logs/osp-prox:usr/local/sayhello-service-engine/logs \
+> sayhello-osp-engine 
 
 ```
 
  ##运行SOA Proxy
 
 ```Bash
-docker run –d -e VIP_CFGCENTER_ZK_CONNECTION=10.101.18.110:2181,10.101.18.111:2181,10.101.18.112:2181–p2080:2080 –v /apps/logs/osp-prox:/usr/local/osp-proxy-2.4.9/logs   osp-proxy
+docker run –d \
+> -e VIP_CFGCENTER_ZK_CONNECTION=10.101.18.110:2181,10.101.18.111:2181,10.101.18.112:2181 \
+> –p2080:2080 \
+> –v /apps/logs/osp-prox:/usr/local/osp-proxy-2.4.9/logs \
+>  osp-proxy
 
 ```
