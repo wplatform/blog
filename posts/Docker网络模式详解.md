@@ -15,20 +15,20 @@ Docker网络模式介绍
 
 #2. bridge模式的网络结构
 
-当Docker server启动时，会在主机上创建一个名为docker0（可以在主机上使用ifconfig命令看到docker0）的虚拟网桥，虚拟网桥的工作方式和物理交换机类似，此主机上启动的Docker容器会连接到这个虚拟网桥上。这样主机上的所有容器就通过交换机连在了一个二层网络中。接下来就要为容器分配IP了，Docker会从[RFC1918](http://tools.ietf.org/html/rfc1918)所定义的私有IP网段中，选择一个和宿主机不同的IP地址和子网分配给docker0，连接到docker0的容器就从这个子网中选择一个未占用的IP使用。如一般Docker会使用172.17.0.0/16这个网段，并将172.17.42.1/16分配给docker0网桥。那如，Docker容器，docker0，宿主机组成了如下的网络结构：
+当Docker server启动时，会在主机上创建一个名为docker0（可以在主机上使用ifconfig命令看到docker0）的虚拟网桥，虚拟网桥的工作方式和物理交换机类似，此主机上启动的Docker容器会连接到这个虚拟网桥上。这样主机上的所有容器就通过交换机连在了一个二层网络中。接下来就要为容器分配IP了，Docker会从[RFC1918](http://tools.ietf.org/html/rfc1918)所定义的私有IP网段中，选择一个和宿主机不同的IP地址和子网分配给docker0，连接到docker0的容器就从这个子网中选择一个未占用的IP使用。如一般Docker会使用172.17.0.0/16这个网段，并将172.17.42.1/16分配给docker0网桥。那么，Docker容器，docker0，宿主机组成了如下的网络结构：
 
 ![](https://raw.githubusercontent.com/wplatform/blog/master/assets/docker002/0001.png) 
 
 
 
-docker连接到容器的配置大概是这样子的：在主机上创建一对虚拟网卡veth pair设备。veth设备总是成对出现的，它们组成了一个数据的通道，数据从一个设备进入，就会从另一个设备出来。因此，veth设备常用来连接两个网络设备。
+容器与docker0网桥的网络配置大概是这样子的：在主机上创建一对虚拟网卡veth pair设备。veth设备总是成对出现的，它们组成了一个数据的通道，数据从一个设备进入，就会从另一个设备出来。因此，veth设备常用来连接两个网络设备。
 Docker将veth pair设备的一端放在新创建的容器中，并命名为eth0。另一端放在主机中，以veth39341b8这样类似的名字命名，并将这个网络设备加入到docker0网桥中，可以通过brctl show命令查看。
 
 ![](https://raw.githubusercontent.com/wplatform/blog/master/assets/docker002/0002.png)
 
 从docker0子网中分配一个IP给容器使用，并设置docker0的IP地址为容器的默认网关。
 
-#3 bridge模式下容器的通信
+#3. bridge模式下容器的通信
 
 在bridge模式下，连在同一网桥上的容器可以相互通信（若出于安全考虑，也可以禁止它们之间通信，方法是在DOCKER_OPTS变量中设置--icc=false，这样只有使用--link才能使两个容器通信）。
 
