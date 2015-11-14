@@ -23,7 +23,7 @@ else
 def echo(args: String*): Unit = {
     for (arg <- args) println(arg)
 }
-```
+
 //这样定义,echo 可以被零个至多个 String 参数调用
 echo()
 echo ("One")
