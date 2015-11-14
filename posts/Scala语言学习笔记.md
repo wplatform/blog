@@ -1,6 +1,6 @@
 Scala语言学习笔记
 ==
-Scala是Twitter使用的主要应用编程语言之一。Twitter很多的基础架构都是用scala写的。著名的开源项目有spark,kafka,marathon等。要熟悉这些项目的实现，熟悉Scala语言是必需的，虽然Scala最终编译成Java字节码运行在Java平台上，但它不是Java，而是把它作为一门新的语言。Scala提供很多工具使表达式可以很简洁， 这是对于习惯java编程风格的人而言算是一种新的事务，不好理解，个人觉得其学习的门槛会比Java要高。一门语言并不是你想精通就能够精通的，还是需要一个过程的，因为没有长时间工作于Scala语言之上，将学到关于Scala语言特性的整理成文，以便日后参考。
+Scala是Twitter使用的主要应用编程语言之一。Twitter很多的基础架构都是用scala写的。著名的开源项目有spark，kafka，marathon等。要熟悉这些项目的实现，熟悉Scala语言是必需的，虽然Scala最终编译成Java字节码运行在Java平台上，但它不是Java，而是把它作为一门新的语言。Scala提供很多工具使表达式可以很简洁， 这是对于习惯java编程风格的人而言算是一种新的事务，不好理解，个人觉得其学习的门槛会比Java要高。一门语言并不是你想精通就能够精通的，还是需要一个过程的，因为没有长时间工作于Scala语言之上，将学到关于Scala语言特性的整理成文，以便日后参考。
 
 
 #1. 变量定义
@@ -23,7 +23,7 @@ else
 def echo(args: String*): Unit = {
     for (arg <- args) println(arg)
 }
-
+```
 //这样定义,echo 可以被零个至多个 String 参数调用
 echo()
 echo ("One")
@@ -39,7 +39,8 @@ echo(arr: _*)
 ```
 
 #3. 方法的调
-通常，scala和其他大多数的语言一样，对方法的调用使用是：<class instance>.<method>[(<parameters>)],但scala对于单参数方法的调用有种简化的写法，也就是把方法名当做一种操作符，使用对象 方法名 参数中间以空格分隔的方式：<object> <method> <parameter>。
+通常，scala和其他大多数的语言一样，对方法的调用使用是:instance.method(parameters ...),但scala对于单参数方法的调用有种简化的写法，也就是把方法名当做一种操作符，使用对象 方法名 参数中间以空格分隔的方式:object method parameter。
+```Scala
 import java.util.{Date, Locale}
 import java.text.DateFormat
 import java.text.DateFormat._
@@ -71,6 +72,7 @@ Scala 中的一切都是对象，从这个意义上说，Scala 是纯粹的面�
 ```
 由此我们还可以看到：+, *等符号在 Scala 中是合法的标识符。打开Scala Int类，果然定义了＋，－，＊，/等方法
 ```Scala
+  //..........省略.............
   def +(x : scala.Int) : scala.Int
   def -(x : scala.Int) : scala.Int
   def *(x : scala.Int) : scala.Int
