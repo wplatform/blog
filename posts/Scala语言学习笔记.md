@@ -1,7 +1,6 @@
-Ｓcala语言学习笔记
+Scala语言学习笔记
 ==
-
-Scala是Twitter使用的主要应用编程语言之一。Twitter很多的基础架构都是用scala写的。著名的开源项目有spark，kafka，marathon等。要熟悉这些项目的实现，熟悉Scala语言是必需的，虽然Scala最终编译成Java字节码运行在Java平台上，但它不是Java，而是把它作为一门新的语言。Scala提供很多工具使表达式可以很简洁， 这是对于习惯java编程风格的人而言算是一种新的事务，不好理解，个人觉得其学习的门槛会比Java要高。一门语言并不是你想精通就能够精通的，还是需要一个过程的，因为没有长时间工作于Scala语言之上，将学到关于Scala语言特性的整理成文，以便日后参考。
+Scala是Twitter使用的主要应用编程语言之一。Twitter很多的基础架构都是用scala写的。著名的开源项目有spark,kafka,marathon等。要熟悉这些项目的实现，熟悉Scala语言是必需的，虽然Scala最终编译成Java字节码运行在Java平台上，但它不是Java，而是把它作为一门新的语言。Scala提供很多工具使表达式可以很简洁， 这是对于习惯java编程风格的人而言算是一种新的事务，不好理解，个人觉得其学习的门槛会比Java要高。一门语言并不是你想精通就能够精通的，还是需要一个过程的，因为没有长时间工作于Scala语言之上，将学到关于Scala语言特性的整理成文，以便日后参考。
 
 
 #1. 变量定义
@@ -11,7 +10,7 @@ val str = "hello"
 var age = 20
 lazy val forLater = someTimeConsumingOperation()
 ```
-＃2. 方法的定义
+#2. 方法的定义
 函数的定义用def开始，方法的定义格式：def 方法名（参数名：参数类型,…）：返回值类型={方法体}
 ```Scala
 def max(x: Int, y: Int): Int = { 
@@ -30,7 +29,9 @@ echo()
 echo ("One")
 echo ("Hello","World")
 
-//echo 函数里被声明为类型“String*” 的 args 的类型实际上是 Array[String]。然而, 不能直接以数组做为入参，需要在数组参数后添加一个冒号和一个_*符号,像这样:
+/*echo 函数里被声明为类型“String*” 的 args 的类型实际上是 Array[String]。然而, 不能直接以数组做为入参，
+ *需要在数组参数后添加一个冒号和一个_*符号,像这样:
+ */
 
 val arr = Array("What's", "up", "doc?")
 echo(arr: _*)
