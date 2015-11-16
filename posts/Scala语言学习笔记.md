@@ -202,4 +202,33 @@ val composed_signal: PartialFunction[Int,Int] = signal.orElse{
 }  
 composed_signal(0)
 ```
+#8. Option、Some、None
+在java中，我们经常会遇到null异常，看到一个方法，我们无法确定它会不会返回一个null对象。方法本身也无法保证接收到的参数一定是不是null，所以有了防御式编程的说法。返回值与参数的取值说明，我们只能从代码注释或者文档中得知，更差情况，从代码实现得知，无法从函数签名直观得到。Scala引入Option类解决了这个问题。
+
+为了让所有东西都是对象的目标更加一致，也为了遵循函数式编程的习惯，Scala鼓励你在变量和函数返回值可能不会引用任何值的时候使用Option类型。在没有值的时候，使用None，这是Option的一个子类。如果有值可以引用，就使用Some来包含这个值。Some也是Option的子类。 
+
+Option类型的值通常作为Scala集合类型（List,Map等）操作的返回类型。比如Map的get方法：
+```Scala
+val capitals = Map("France"->"Paris", "Japan"->"Tokyo", "China"->"Beijing")
+val res0 = capitals get "France" //res0:Option[String] = Some(Paris)
+val res1 = capitals get "North Pole" //res1: Option[String] = None
+```
+Option有两个子类别，Some和None。当程序回传Some的时候，代表这个函式成功地给了你一个String，而你可以透过get()函数拿到那个String，如果程序返回的是None，则代表没有字符串可以给你。在返回None，也就是没有String给你的时候，如果你还硬要调用get()来取得 String 的话，Scala一样是会抛出一个NoSuchElementException异常给你的。也可以选用另外一个方法，getOrElse。这个方法在这个Option是Some的实例时返回对应的值，而在是None的实例时返回传入的参数。换句话说，传入getOrElse的参数实际上是默认返回值
+```Scala
+val res2 = (capitals get "North Pole") getOrElse "Oops" //res2: String = Oops
+val res3 = capitals get "France" getOrElse "Oops" //res3: String = Paris
+```
+通过模式匹配分离可选值，如果匹配的值是Some的话，将Some里的值抽出赋给x变量：
+```Scala
+def showCapital(x: Option[String]) = x match {
+    case Some(s) => s
+    case None => "?"
+}
+```
+在Scala里Option[T]实际上是一个容器，就像数组或是List一样，你可以把他看成是一个可能有零到一个元素的List。当你的Option里面有东西的时候，这个List的长度是1（也就是Some），而当你的Option里没有东西的时候，它的长度是0（也就是 None）。
+```Scala
+val map = Map("key1" -> "value1")
+val value = map.get("key1")
+value.map("length: " + _.length).foreach(println)
+```
 
