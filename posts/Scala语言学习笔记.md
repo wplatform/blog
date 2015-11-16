@@ -187,7 +187,7 @@ val signal: PartialFunction[Int, Int] = {
 ```
 编译成了如下的等价形式： 
 ```Scala
-new PartialFunction[List[Int], Int] {  
+new PartialFunction[Int, Int] {  
     def apply(x: Int) = x match {  
         case x if x >= 1 => 1  
         case x if x <= -1 => -1  
