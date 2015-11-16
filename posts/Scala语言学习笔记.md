@@ -107,7 +107,7 @@ class Bar(foo: String) {
 val b = bar() //=bar.apply()
 ```
 
-#6. 方法和函数的区别
+#6. 方法和函数
 
 Scala方法和函数有些差别，大多数情况下我们都可以不去理会他们之间的区别。但是有时候我们必须要了解他们之间的不同。一个scala 方法，在java中是类的一部分，它有一个名字，一个签名，可选的注解 和字节码。在scala中一个函数是一个完整的object，在scala中有一系列的特质(trait)代表各种各样的带参数的函数：Function0到Function22（似乎函数最多只能支持22个参数）。具有一个参数的函数是Function1特质的一个实例。一个函数object有许多方法。这些方法之一就是apply方法，这个方法包含了实现这个函数的代码。 scala中apply有特殊的语法：如果你写一个函数名紧接着是一个带一系列参数列表的括号（或者仅有不带参数的括号），scala会将调用转换成对应名的object的apply方法。
 
@@ -167,3 +167,42 @@ test2.m1 //调用方法m1
 test2.f1 //什么也不干
 
 ```
+#7. 偏函数(PartialFunction)
+在Scala中，偏函数是具有类型PartialFunction[-T,+V]的一种函数。T是其接受的函数类型，V是其返回的结果类型。偏函数最大的特点就是它只接受和处理其参数定义域的一个子集，而对于这个子集之外的参数则抛出运行时异常。这与Case语句的特性非常契合，因为我们在使用case语句是，常常是匹配一组具体的模式，最后用“_”来代表剩余的模式。如果一组case语句没有涵盖所有的情况，那么这组case语句就可以被看做是一个偏函数。
+
+
+Scala具有一个与case语句相关的语言特性，那就是：在Scala中，被“{}”包含的一系列case语句可以被看成是一个函数字面量，它可以被用在任何普通的函数字面量适用的地方，例如被当做参数传递。
+```Scala
+val signal: PartialFunction[Int, Int] = {  
+    case x if x >= 1 => 1  
+    case x if x <= -1 => -1  
+}
+```
+实际上，scala编译器把函数字面量： 
+```Scala
+{  
+    case x if x >= 1 => 1  
+    case x if x <= -1 => -1  
+}
+```
+编译成了如下的等价形式： 
+```Scala
+new PartialFunction[List[Int], Int] {  
+    def apply(x: Int) = x match {  
+        case x if x >= 1 => 1  
+        case x if x <= -1 => -1  
+    }  
+    def isDefinedAt(x: Int) = x match {  
+	case x if x == 0 _ => false  
+	case _ => true
+    }
+}  
+```
+这个signal所引用的函数除了0值外，对所有整数都定义了相应的操作。signal(0)会抛出异常，因此使用前最好先signal.isDefinedAt(0)判断一下。偏函数主要用于这样一种场景：对某些值现在还无法给出具体的操作（即需求还不明朗），也有可能存在几种处理方式（视乎具体的需求）；我们可以先对需求明确的部分进行定义，比如上述除了0外的所有整数域，然后根据具体情况补充对其他域的定义，如：
+```Scala
+val composed_signal: PartialFunction[Int,Int] = signal.orElse{  
+    case 0 => 0  
+  }  
+composed_signal(0)
+```
+
