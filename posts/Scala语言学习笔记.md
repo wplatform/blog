@@ -14,10 +14,7 @@ lazy val forLater = someTimeConsumingOperation()
 函数的定义用def开始，方法的定义格式：def 方法名（参数名：参数类型,…）：返回值类型={方法体}
 ```Scala
 def max(x: Int, y: Int): Int = { 
-if (x > y) 
-    x
-else
-    y 
+    if (x > y) x else y 
 }
 //变长参数
 def echo(args: String*): Unit = {
@@ -193,8 +190,8 @@ new PartialFunction[Int, Int] {
         case x if x <= -1 => -1  
     }  
     def isDefinedAt(x: Int) = x match {  
-	case x if x == 0 _ => false  
-	case _ => true
+        case x if x == 0 _ => false  
+        case _ => true
     }
 }  
 ```
@@ -202,7 +199,7 @@ new PartialFunction[Int, Int] {
 ```Scala
 val composed_signal: PartialFunction[Int,Int] = signal.orElse{  
     case 0 => 0  
-  }  
+}  
 composed_signal(0)
 ```
 
