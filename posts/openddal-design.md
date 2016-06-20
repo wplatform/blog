@@ -1,5 +1,5 @@
-#### 分布式Sequence实现
-在分布式环境下，支持生成产生64位唯一ID主法的算法有snowflake,hilo。snowflake
+#### 分布式Sequence之hilo算法实现
+hilo主键生成策略的就是为了提高序列生成的效率问题，它改善了每次生成一个顺列都必须查询一遍数据库的模式，取而代之的是向数据库申请一段范围的序列号，生成这范围内的顺列无需访问数据库。hilo需要数据库的辅助表或sequence记录范围号，并控制多个顺列实列申请的范围不能重复，保证集群的唯一性。
 
 #### OpenDDAL的JDBC Statement的QueryTimeout处理过程 
 Statement queryTimeout用来限制statement的执行时长，单位为秒，timeout的值通过调用JDBC的java.sql.Statement.setQueryTimeout(int timeout) API进行设置。OpenDDAL完成一次statement执行可能会访问多个结节的数据,会创建多个数据处理的handler,HandlerHolderProxy的职责就是记录这些handler，方便session对运行的statement执行资源控制。
