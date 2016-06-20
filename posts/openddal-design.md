@@ -7,6 +7,12 @@ OpenDDAL维护如下的表结构用于存放sequence序列状态
 |:---|:---:|
 | test_sequence | 2 |
 
+hilo 辅助表中的next_val数值是范围的序号。其含义就是一段连续可分配的整数，如：1-10，50-100 等。桶的容量即是 cacheSize 的值，假定 cacheSize 的值为 100，那么范围的序号和每个范围容纳的整数可参看下表：
+
+| 序号 | 1 | 2 | 3 | 4 | 5 | ... |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| 范围 | 1-100 | 101-200 | 201-300 | 301-400 | 401-500 | ... |
+
 #### OpenDDAL的JDBC Statement的QueryTimeout处理过程 
 Statement queryTimeout用来限制statement的执行时长，单位为秒，timeout的值通过调用JDBC的java.sql.Statement.setQueryTimeout(int timeout) API进行设置。OpenDDAL完成一次statement执行可能会访问多个结节的数据,会创建多个数据处理的handler,HandlerHolderProxy的职责就是记录这些handler，方便session对运行的statement执行资源控制。
 
