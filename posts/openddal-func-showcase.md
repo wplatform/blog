@@ -83,7 +83,7 @@
 
 
 	<dataNodes>
-		<datasource id="db1m" class="org.apache.commons.dbcp.BasicDataSource">
+		<datasource id="master01" class="org.apache.commons.dbcp.BasicDataSource">
 			<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 			<property name="url"
 				value="jdbc:mysql://10.199.188.136:3306/ddal_db1?connectTimeout=1000&amp;rewriteBatchedStatements=true" />
@@ -111,7 +111,7 @@
 
 </ddal-config>
 ```
-#### 2.建设你的环境,创建数据库对像
+#### 2.OpendDDAL支持ddl语句，在OpendDDAL创建数据库对象，分别会在各自的shard上创建对应的数据库对象。 无需人工参与。OpendDDAL提供了ScriptRunner工作，可以将语句放至到文件中，批量运行脚本。
 mysql_script.sql
 ```sql
 DROP TABLE IF EXISTS customers,address,order_items,order_status,orders,product,product_category,customer_logs;
