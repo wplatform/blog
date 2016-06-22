@@ -44,7 +44,7 @@
 			</nodes>
 			<tableRule>
 				<columns>${table.ruleColumns}</columns>
-				<algorithm>order_partitioner</algorithm>
+				<algorithm>customer_partitioner</algorithm>
 			</tableRule>
 		</tableGroup>
 
@@ -260,3 +260,71 @@ MULTIPLE_EXECUTION
 
 ````
 #### 5.需求总是变化的，表增减字段，SQL执行变量了要加index,在OpendDDAL上也是分分钟搞定的事情
+````java
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = getConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("EXPLAIN PLAN FOR ALTER TABLE  CUSTOMERS ADD IF NOT EXISTS GMT_TIME TIME");
+            printResultSet(rs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtils.closeSilently(rs);
+            JdbcUtils.closeSilently(stmt);
+            JdbcUtils.closeSilently(conn);
+        }
+````
+执行结果
+````sql
+PLAN 
+-------------------
+MULTIPLE_EXECUTION
+    execute on shard0: ALTER TABLECUSTOMERS_01 ADD COLUMN GMT_TIME TIME
+    execute on shard0: ALTER TABLECUSTOMERS_02 ADD COLUMN GMT_TIME TIME
+    execute on shard1: ALTER TABLECUSTOMERS_01 ADD COLUMN GMT_TIME TIME
+    execute on shard1: ALTER TABLECUSTOMERS_02 ADD COLUMN GMT_TIME TIME
+    execute on shard2: ALTER TABLECUSTOMERS_01 ADD COLUMN GMT_TIME TIME
+    execute on shard2: ALTER TABLECUSTOMERS_02 ADD COLUMN GMT_TIME TIME
+    execute on shard3: ALTER TABLECUSTOMERS_01 ADD COLUMN GMT_TIME TIME
+    execute on shard3: ALTER TABLECUSTOMERS_02 ADD COLUMN GMT_TIME TIME 
+````
+#### 6.分布式唯一Sequence支持
+````java
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = getConnection();
+            stmt = conn.createStatement();
+            int rows = stmt.executeUpdate(
+                    "insert into CUSTOMERS values(customer_seq.nextval, 1000, '马云', '大老', '1965-01-20')");
+            System.out.println(rows);
+            rs = stmt.executeQuery("select last_insert_id()");
+            rs.next();
+            System.out.println("LAST_INSERT_ID: " + rs.getLong(1));
+        } catch (Exception e) {
+            Assert.fail();
+        } finally {
+            JdbcUtils.closeSilently(rs);
+            JdbcUtils.closeSilently(stmt);
+            JdbcUtils.closeSilently(conn);
+        }
+    
+````
+打印结果
+````bash
+1 
+LAST_INSERT_ID: 1708
+````
+获取Sequence的方式可以通过：
+````sql
+select customer_seq.nextval dual
+select customer_seq.currval dual
+select nextval('customer_seq') dual
+select currval('customer_seq') dual
+select last_insert_id() dual
+select last_insert_id() dual
+````
