@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `customer_logs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ```
-#### 3.OpendDDAL实现了一套完整的jdbc规范，易于基于jdbc开发的应用迁移至OpendDDAL实现分库分表。OpendDDAL提供了JdbcDriver。用户可以选用任意的数据源品产品。下面的应用使用dbcp进行演于。
+#### 3.OpendDDAL实现了一套完整的jdbc规范，易于基于jdbc开发的应用迁移至OpendDDAL实现分库分表。OpendDDAL提供了JdbcDriver。用户可以选用任意的数据源品产品。下面的应用使用dbcp进行演示。
 ```java
     //创建dbcp数据源
     BasicDataSource ds = new BasicDataSource();
@@ -257,3 +257,4 @@ MULTIPLE_EXECUTION
     execute on shard3: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_04(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_04(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1 
 
 ````
+#### 5.需求总是变化的，表增减字段，SQL执行变量了要加index,在OpendDDAL上也是分分钟搞定的事情
