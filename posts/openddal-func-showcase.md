@@ -111,7 +111,7 @@
 
 </ddal-config>
 ```
-#### 2.OpendDDAL支持ddl语句，在OpendDDAL创建数据库对象，分别会在各自的shard上创建对应的数据库对象。 无需人工参与。OpendDDAL提供了ScriptRunner工作，可以将语句放至到文件中，批量运行脚本。
+#### 2.OpendDDAL支持ddl语句，在OpendDDAL执行上面的SQL，OpendDDAL会在数据库集群上创建对应的数据库对象。 无需人工参与。OpendDDAL提供了ScriptRunner工作，可以将语句放至到文件中，批量运行脚本。
 mysql_script.sql
 ```sql
 DROP TABLE IF EXISTS customers,address,order_items,order_status,orders,product,product_category,customer_logs;
@@ -194,16 +194,15 @@ CREATE TABLE IF NOT EXISTS `customer_logs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ```
-#### 3.在OpendDDAL执行上面的SQL，OpendDDAL会在数据库集群上创建对应的数据库对象
+#### 3.OpendDDAL实现了一套完整的jdbc规范，易于基于jdbc开发的应用迁移至OpendDDAL实现分库分表。OpendDDAL提供了JdbcDriver。用户可以选用任意的数据源品产品。下面的应用使用dbcp进行演于。
 ```java
-    //创建数据源
+    //创建dbcp数据源
     BasicDataSource ds = new BasicDataSource();
     ds.setDriverClassName("com.openddal.jdbc.JdbcDriver");
     ds.setUrl("jdbc:openddal:");
     ds.setDefaultAutoCommit(false);
     ds.setDefaultTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-    ds.setTestOnBorrow(true);
-    
+
     //运行mysql_script.sql脚本
     ScriptRunner runner = new ScriptRunner(ds.getConnection());
     runner.setAutoCommit(true);
@@ -217,13 +216,13 @@ CREATE TABLE IF NOT EXISTS `customer_logs` (
         Assert.fail(e.getMessage());
     }
 ```
-#### 4.怎么样执行SQL，看看执行设划
+#### 4.SQL怎样执行的，看看执行计划
 ````java
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            conn = getConnection();
+            conn = ds.getConnection();
             stmt = conn.createStatement();
             rs = stmt.executeQuery("EXPLAIN PLAN FOR CREATE TABLE IF NOT EXISTS `order_items`(`item_id` int(11) NOT NULL,`order_id` int(11) NOT NULL,`item_info` varchar(218) DEFAULT NULL,`create_date` datetime NOT NULL, PRIMARY KEY (`order_id`),  KEY (`create_date`), FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1");
             printResultSet(rs);
