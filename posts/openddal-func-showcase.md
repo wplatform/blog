@@ -3,12 +3,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE ddal-config PUBLIC "-//openddal.com//DTD ddal-config//EN" "http://openddal.com/dtd/ddal-config.dtd">
 <ddal-config>
-
+	
 	<settings>
-		<property name="ddal.compatibilityMode" value="MySQL" />
-		<property name="ddal.queryTimeout" value="3000" />
-		<property name="ddal.validationQuery" value="select 1" />
-		<property name="ddal.validationQueryTimeout" value="1000" />
+		<property name="sqlMode" value="MySQL" />
+		<property name="defaultQueryTimeout" value="3000" />
+		<property name="validationQuery" value="select 1" />
+		<property name="validationQueryTimeout" value="1000" />
 	</settings>
 
 	<schema name="SCHEMA_MAIN" force="false">
@@ -64,16 +64,20 @@
 
 	<cluster>
 		<shard name="shard0">
-			<member ref="db1m" />
+			<member ref="master01" rWeight="5"/>
+			<member ref="slave01" rWeight="10"/>
 		</shard>
 		<shard name="shard1">
-			<member ref="db2m" />
+			<member ref="master02" rWeight="5"/>
+			<member ref="slave02" rWeight="10"/>
 		</shard>
 		<shard name="shard2">
-			<member ref="db3m" />
+			<member ref="master03" rWeight="5"/>
+			<member ref="slave03" rWeight="10"/>
 		</shard>
 		<shard name="shard3">
-			<member ref="db4m" />
+			<member ref="master04" rWeight="5"/>
+			<member ref="slave04" rWeight="10"/>
 		</shard>
 	</cluster>
 
@@ -88,33 +92,7 @@
 			<property name="maxWait" value="0" />
 			<property name="poolPreparedStatements" value="true" />
 		</datasource>
-		<datasource id="db2m" class="org.apache.commons.dbcp.BasicDataSource">
-			<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-			<property name="url"
-				value="jdbc:mysql://10.199.188.136:3306/ddal_db2?connectTimeout=1000&amp;rewriteBatchedStatements=true" />
-			<property name="username" value="root" />
-			<property name="password" value="!Passw0rd01" />
-			<property name="maxWait" value="0" />
-			<property name="poolPreparedStatements" value="true" />
-		</datasource>
-		<datasource id="db3m" class="org.apache.commons.dbcp.BasicDataSource">
-			<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-			<property name="url"
-				value="jdbc:mysql://10.199.188.136:3306/ddal_db3?connectTimeout=1000&amp;rewriteBatchedStatements=true" />
-			<property name="username" value="root" />
-			<property name="password" value="!Passw0rd01" />
-			<property name="maxWait" value="0" />
-			<property name="poolPreparedStatements" value="true" />
-		</datasource>
-		<datasource id="db4m" class="org.apache.commons.dbcp.BasicDataSource">
-			<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-			<property name="url"
-				value="jdbc:mysql://10.199.188.136:3306/ddal_db4?connectTimeout=1000&amp;rewriteBatchedStatements=true" />
-			<property name="username" value="root" />
-			<property name="password" value="!Passw0rd01" />
-			<property name="maxWait" value="0" />
-			<property name="poolPreparedStatements" value="true" />
-		</datasource>
+		.....
 	</dataNodes>
 
 
