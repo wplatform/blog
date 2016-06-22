@@ -111,6 +111,8 @@
 
 </ddal-config>
 ```
+应用可以返问的表需要在schema中定义，OpendDDAL中定义的表分为三种类型：sharding table,broadcast table, fixnode table, tableGroup，broadcast特别的为OpendDDAL JoinFree做优化，比较同一个tableGroup的比按ruleColumns进行inner jone ,right/left out join可应用JoinFree进行优化，避免夸库。
+
 #### 2.OpendDDAL支持ddl语句，在OpendDDAL执行上面的SQL，OpendDDAL会在数据库集群上创建对应的数据库对象。 无需人工参与。OpendDDAL提供了ScriptRunner工作，可以将语句放至到文件中，批量运行脚本。
 mysql_script.sql
 ```sql
