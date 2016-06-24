@@ -59,6 +59,11 @@
 		<table name="customer_login_log">
 			<node shard="shard0" name="t_customer_login_log"/>
 		</table>
+		
+		<sequence name="customer_seq" strategy="hilo">
+			<property name="shard" value="shard0" />
+			<property name="cacheSize" value="50" />
+		</sequence>
 
 	</schema>
 
