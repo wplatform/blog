@@ -1,6 +1,6 @@
 ## 1.配置数据库集群
 
-规划好数据表的切分规模，建立数据库集群。OpenDDAL中的ddal-config.xml用于描述这些信息，下面显示功能演示中使用的配置，些配置文件可能在[openddal-functions-showcase]()中找到。
+规划好数据表的切分规模，建立数据库集群。OpenDDAL中的ddal-config.xml用于描述这些信息，下面显示功能演示中使用的配置，些配置文件可能在[openddal-quickstart-server](https://github.com/openddal/openddal-quickstart-server/blob/master/conf/engine.xml)中找到。
 ```xml
 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -128,7 +128,7 @@ OpendDDAL实现了一套完整的jdbc规范，易于基于jdbc开发的应用迁
 
 ## 3. 使用openddal-server
 
-本文档使用的server以上传到github上，欢迎[下载]()试玩。
+本文档使用的openddal-quickstart-server以上传到github上，欢迎[下载](https://github.com/openddal/openddal-quickstart-server)试玩。
 
 #### 3.1启动server进程
 ```bash
@@ -213,7 +213,7 @@ mysql> show partitions customers;
 
 ```
 
-OpendDDAL支持ddl语句，以上的表并未创建物理表结点，可以在OpendDDAL执行上执行创建，OpendDDAL会在数据库集群上创建对应的数据库对象。 可以将语句放至到文件中[mysql_script.sql]()，批量运行脚本。
+OpendDDAL支持ddl语句，以上的表并未创建物理表结点，可以在OpendDDAL执行上执行创建，OpendDDAL会在数据库集群上创建对应的数据库对象。 可以将语句放至到文件中[mysql_script.sql](https://github.com/openddal/openddal-quickstart-server/blob/master/mysql_script.sql)，批量运行脚本。
 
 ```bash
 mysql> source D:\product_code\openddal\openddal-tests\src\main\resources\script\mysql_script.sql
@@ -253,99 +253,127 @@ mysql> show columns from customers;
 
 完成物理表结点的创建就可以访问表的的数据
 
-#### 5.1 insert操作
+#### 5.1 看看SQL在那个结点上执行
 
-
-
-执行结果
 ````sql
-PLAN 
--------------------
-MULTIPLE_EXECUTION
-    execute on shard0: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_01(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_01(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard0: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_02(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_02(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard0: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_03(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_03(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard0: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_04(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_04(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard1: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_01(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_01(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard1: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_02(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_02(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard1: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_03(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_03(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard1: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_04(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_04(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard2: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_01(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_01(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard2: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_02(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_02(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard2: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_03(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_03(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard2: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_04(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_04(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard3: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_01(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_01(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard3: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_02(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_02(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard3: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_03(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_03(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1
-    execute on shard3: CREATE TABLE IF NOT EXISTS ORDER_ITEMS_04(ITEM_ID INT NOT NULL, ORDER_ID INT NOT NULL, ITEM_INFO VARCHAR(218) DEFAULT NULL, CREATE_DATE DATETIME NOT NULL,  CONSTRAINT PRIMARY KEY(ORDER_ID),  INDEX(CREATE_DATE),  CONSTRAINT FOREIGN KEY(ORDER_ID) REFERENCES ORDERS_04(ORDER_ID)) ENGINE = InnoDb DEFAULT CHARACTER SET = latin1 
+mysql> explain plan for insert into customers(id,rand_id,name,customer_info,birthdate) values (customer_seq.nextval, customer_seq.currval,'zhangshang','zhangshang','1985-01-01');
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| PLAN                                                                                                                                                                                                                |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| SINGLE_EXECUTION
+    execute on shard0: INSERT INTO CUSTOMERS_01(ID, RAND_ID, NAME, CUSTOMER_INFO, BIRTHDATE) VALUES (?, ?, ?, ?, ?) params: {1: 47, 2: 47, 3: 'zhangshang', 4: 'zhangshang', 5: DATE '1985-01-01'} |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.01 sec)
+
+mysql> insert into customers(id,rand_id,name,customer_info,birthdate) values (customer_seq.nextval, customer_seq.currval,'zhangshang','zhangshang','1985-01-01');
+Query OK, 1 row affected (0.01 sec)
 
 ````
-#### 5.需求总是变化的，表增减字段，SQL执行变量了要加index,在OpendDDAL上也是分分钟搞定的事情
-````java
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            conn = getConnection();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("EXPLAIN PLAN FOR ALTER TABLE  CUSTOMERS ADD IF NOT EXISTS GMT_TIME TIME");
-            printResultSet(rs);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            JdbcUtils.closeSilently(rs);
-            JdbcUtils.closeSilently(stmt);
-            JdbcUtils.closeSilently(conn);
-        }
-````
-执行结果
+
+#### 5.2 合并查询
+
 ````sql
-PLAN 
--------------------
-MULTIPLE_EXECUTION
-    execute on shard0: ALTER TABLECUSTOMERS_01 ADD COLUMN GMT_TIME TIME
-    execute on shard0: ALTER TABLECUSTOMERS_02 ADD COLUMN GMT_TIME TIME
-    execute on shard1: ALTER TABLECUSTOMERS_01 ADD COLUMN GMT_TIME TIME
-    execute on shard1: ALTER TABLECUSTOMERS_02 ADD COLUMN GMT_TIME TIME
-    execute on shard2: ALTER TABLECUSTOMERS_01 ADD COLUMN GMT_TIME TIME
-    execute on shard2: ALTER TABLECUSTOMERS_02 ADD COLUMN GMT_TIME TIME
-    execute on shard3: ALTER TABLECUSTOMERS_01 ADD COLUMN GMT_TIME TIME
-    execute on shard3: ALTER TABLECUSTOMERS_02 ADD COLUMN GMT_TIME TIME 
+
+mysql> select * from customers order by name;
++----+---------+------------+---------------+------------+
+| ID | RAND_ID | NAME       | CUSTOMER_INFO | BIRTHDATE  |
++----+---------+------------+---------------+------------+
+| 48 |      48 | zhangshang | zhangshang    | 1985-01-01 |
+| 45 |      45 | 公孙胜     | 银牌会员      | 1980-07-01 |
+| 46 |      46 | 关胜       | 铜牌会员      | 1932-03-01 |
+| 43 |      43 | 卢俊义     | 金牌会员      | 1987-05-01 |
+| 44 |      44 | 吴用       | 银牌会员      | 1970-06-01 |
+| 42 |      42 | 宋江       | 金牌会员      | 1985-01-01 |
++----+---------+------------+---------------+------------+
+6 rows in set (0.01 sec)
+
 ````
-#### 6.分布式唯一Sequence支持
-````java
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            conn = getConnection();
-            stmt = conn.createStatement();
-            int rows = stmt.executeUpdate(
-                    "insert into CUSTOMERS values(customer_seq.nextval, 1000, '马云', '大老', '1965-01-20')");
-            System.out.println(rows);
-            rs = stmt.executeQuery("select last_insert_id()");
-            rs.next();
-            System.out.println("LAST_INSERT_ID: " + rs.getLong(1));
-        } catch (Exception e) {
-            Assert.fail();
-        } finally {
-            JdbcUtils.closeSilently(rs);
-            JdbcUtils.closeSilently(stmt);
-            JdbcUtils.closeSilently(conn);
-        }
-    
-````
-打印结果
-````bash
-1 
-LAST_INSERT_ID: 1708
-````
-获取Sequence的方式可以通过：
+
+
+#### 5.2 JoinFree查询
+
 ````sql
-select customer_seq.nextval dual
-select customer_seq.currval dual
-select nextval('customer_seq') dual
-select currval('customer_seq') dual
-select last_insert_id() dual
-select last_insert_id() dual
+
+mysql> select  * from customers a, address b where id=customer_id order by name;
++----+---------+-----------+---------------+------------+-----------------+-------------+-------------------------+----------+-------------+
+| ID | RAND_ID | NAME      | CUSTOMER_INFO | BIRTHDATE  | ADDRESS_ID      | CUSTOMER_ID | ADDRESS_INFO            | ZIP_CODE | PHONE_NUM   |
++----+---------+-----------+---------------+------------+-----------------+-------------+-------------------------+----------+-------------+
+| 45 |      45 | 公孙胜    | 银牌会员      | 1980-07-01 | 606051175108608 |          45 | 浙江·磐安               | 54475    | 6332474     |
+| 46 |      46 | 关胜      | 铜牌会员      | 1932-03-01 | 606051217051648 |          46 | 福建·霞浦               | 54245    | 654148      |
+| 43 |      43 | 卢俊义    | 金牌会员      | 1987-05-01 | 606050877313024 |          43 | 山东·烟墩角             | 6542     | 326654654   |
+| 43 |      43 | 卢俊义    | 金牌会员      | 1987-05-01 | 606050957004800 |          43 | 新疆·果子沟             | 5454     | 12654654654 |
+| 43 |      43 | 卢俊义    | 金牌会员      | 1987-05-01 | 606051045085184 |          43 | 云南·坝美               | 5429     | 54654285    |
+| 44 |      44 | 吴用      | 银牌会员      | 1970-06-01 | 606051045085185 |          44 | 甘孜州·丹巴             | 5422     | 69355356    |
+| 42 |      42 | 宋江      | 金牌会员      | 1985-01-01 | 606050579517440 |          42 | 西藏·然乌湖             | 545254   | 65463546    |
+| 42 |      42 | 宋江      | 金牌会员      | 1985-01-01 | 606050789232640 |          42 | 阿坝州·四姑娘山         | 455475   | 65465465    |
++----+---------+-----------+---------------+------------+-----------------+-------------+-------------------------+----------+-------------+
+8 rows in set (0.00 sec)
+
+mysql> select  * from customers a, address b where id=customer_id order by name limit 3,10;
++----+---------+-----------+---------------+------------+-----------------+-------------+-------------------------+----------+-------------+
+| ID | RAND_ID | NAME      | CUSTOMER_INFO | BIRTHDATE  | ADDRESS_ID      | CUSTOMER_ID | ADDRESS_INFO            | ZIP_CODE | PHONE_NUM   |
++----+---------+-----------+---------------+------------+-----------------+-------------+-------------------------+----------+-------------+
+| 43 |      43 | 卢俊义    | 金牌会员      | 1987-05-01 | 606050877313024 |          43 | 山东·烟墩角             | 6542     | 326654654   |
+| 43 |      43 | 卢俊义    | 金牌会员      | 1987-05-01 | 606050957004800 |          43 | 新疆·果子沟             | 5454     | 12654654654 |
+| 44 |      44 | 吴用      | 银牌会员      | 1970-06-01 | 606051045085185 |          44 | 甘孜州·丹巴             | 5422     | 69355356    |
+| 42 |      42 | 宋江      | 金牌会员      | 1985-01-01 | 606050789232640 |          42 | 阿坝州·四姑娘山         | 455475   | 65465465    |
+| 42 |      42 | 宋江      | 金牌会员      | 1985-01-01 | 606050579517440 |          42 | 西藏·然乌湖             | 545254   | 65463546    |
++----+---------+-----------+---------------+------------+-----------------+-------------+-------------------------+----------+-------------+
+5 rows in set (0.01 sec)
+
+````
+#### 5.2 group by having查询
+
+````sql
+
+mysql> select name, count(ADDRESS_ID),sum(ADDRESS_ID),max(ADDRESS_ID),min(ADDRESS_ID),avg(ADDRESS_ID)  from customers a, address b where id=customer_id group by name order by name;
++-----------+-------------------+------------------+-----------------+-----------------+-----------------+
+| NAME      | COUNT(ADDRESS_ID) | SUM(ADDRESS_ID)  | MAX(ADDRESS_ID) | MIN(ADDRESS_ID) | AVG(ADDRESS_ID) |
++-----------+-------------------+------------------+-----------------+-----------------+-----------------+
+| 公孙胜    |                 1 |  606051175108608 | 606051175108608 | 606051175108608 | 606051175108608 |
+| 关胜      |                 1 |  606051217051648 | 606051217051648 | 606051217051648 | 606051217051648 |
+| 卢俊义    |                 3 | 1818152879403008 | 606051045085184 | 606050877313024 | 606050959801003 |
+| 吴用      |                 1 |  606051045085185 | 606051045085185 | 606051045085185 | 606051045085185 |
+| 宋江      |                 2 | 1212101368750080 | 606050789232640 | 606050579517440 | 606050684375040 |
++-----------+-------------------+------------------+-----------------+-----------------+-----------------+
+5 rows in set (0.01 sec)
+
+mysql> select name, count(ADDRESS_ID),sum(ADDRESS_ID),max(ADDRESS_ID),min(ADDRESS_ID),avg(ADDRESS_ID)  from customers a, address b where id=customer_id group by name having COUNT(ADDRESS_ID) > 1 order by name;
++-----------+-------------------+------------------+-----------------+-----------------+-----------------+
+| NAME      | COUNT(ADDRESS_ID) | SUM(ADDRESS_ID)  | MAX(ADDRESS_ID) | MIN(ADDRESS_ID) | AVG(ADDRESS_ID) |
++-----------+-------------------+------------------+-----------------+-----------------+-----------------+
+| 卢俊义    |                 3 | 1818152879403008 | 606051045085184 | 606050877313024 | 606050959801003 |
+| 宋江      |                 2 | 1212101368750080 | 606050789232640 | 606050579517440 | 606050684375040 |
++-----------+-------------------+------------------+-----------------+-----------------+-----------------+
+2 rows in set (0.01 sec)
+
+````
+
+## 6.分布式Sequence支持
+
+````sql
+mysql> select address_seq.nextval snowflake, customer_seq.nextval hilo;
++-----------------+------+
+| SNOWFLAKE       | HILO |
++-----------------+------+
+| 624026556960768 |   51 |
++-----------------+------+
+1 row in set (0.01 sec)
+
+mysql> select address_seq.currval snowflake, customer_seq.currval hilo;
++-----------------+------+
+| SNOWFLAKE       | HILO |
++-----------------+------+
+| 624026556960768 |   51 |
++-----------------+------+
+1 row in set (0.01 sec)
+
+mysql> select LAST_INSERT_ID(), IDENTITY(), SCOPE_IDENTITY();
++------------------+------------+------------------+
+| LAST_INSERT_ID() | IDENTITY() | SCOPE_IDENTITY() |
++------------------+------------+------------------+
+|               51 |         51 |               51 |
++------------------+------------+------------------+
+1 row in set (0.02 sec)
+
 ````
