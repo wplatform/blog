@@ -236,7 +236,7 @@ Query OK, 0 rows affected (0.14 sec)
 Query OK, 0 rows affected (0.03 sec)
 ```
 mysql_script.sql完成物理表结点的创建
-
+```bash
 mysql> show columns from customers;
 +---------------+--------------+------+------+---------+
 | FIELD         | TYPE         | NULL | KEY  | DEFAULT |
@@ -248,7 +248,7 @@ mysql> show columns from customers;
 | birthdate     | date(10)     | YES  |      | NULL    |
 +---------------+--------------+------+------+---------+
 5 rows in set (0.10 sec)
-
+```
 ## 5.增删改查
 
 完成物理表结点的创建就可以访问表的的数据
