@@ -1,4 +1,4 @@
-```shell
+```Bash
 git clone git@github.com:mysql/mysql-server.git
 
 cmake \
