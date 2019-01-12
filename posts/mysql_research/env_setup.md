@@ -17,6 +17,12 @@ make -j 4
 
 make install -j 4
 
+cd $HOME/mysql-bin/bin
+
+#使用--initialize-insecure参数执行初始化后，默认root@localhost的密码为空密码
+./mysqld --basedir=/$HOME/mysql-bin --datadir=/$HOME/mysql-bin/data --initialize-insecure --user=jorgie
+
+
 ```
 
 
